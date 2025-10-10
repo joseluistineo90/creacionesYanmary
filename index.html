@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Geometric Store - Tu tienda online de productos únicos y variados">
+    <meta name="keywords" content="tienda online, productos, carrito de compras">
+    <meta name="author" content="Creaciones Yanmary">
+    <title>Geometric Store - Carrito de Compras</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init('rwlwHGmdskaqASSoo');
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+	
+    <nav>
+	
+        <div class="nav-container">
+		<div class="logo">
+                <img src="images/logo.png" alt="Creaciones Yanmary Logo" class="logo-image">
+                <span class="logo-text">Creaciones Yanmary</span>
+            </div>
+            
+            <!-- Botón de carrito móvil siempre visible -->
+            <button class="cart-button cart-button-mobile" onclick="toggleCart()">
+                🛒
+                <span class="cart-count" id="cartCountMobile">0</span>
+            </button>
+            
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menú">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#products">Productos</a></li>
+                <li><a href="#footer">Contacto</a></li>
+                <li><a href="#footer">Síguenos</a></li>
+                <li class="cart-menu-item">
+                    <button class="cart-button" onclick="toggleCart()">
+                        🛒 Carrito
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>🎨 Creaciones Yanmary</h1>
+            <p class="subtitle">Encuentra los mejores productos para tu hogar y estilo de vida</p>
+        </header>
+
+        <!-- PRODUCTOS -->
+        <section class="products-grid" id="products">
+            <article class="product-card">
+                <img src="images/collar-gato.jpg" alt="Collar para Gatos" class="product-image">
+                <h2 class="product-name">Collar para Gatos</h2>
+                <p class="product-price">$4.99</p>
+                <p class="product-description">
+                    Collar tejido ajustable con cascabel, suave y seguro para tu minino.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Collar para Gatos', 4.99, 'images/collar-gato.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+
+            <article class="product-card">
+                <img src="images/comedor-gato.jpg" alt="Comedor de Gato" class="product-image">
+                <h2 class="product-name">Comedor para Gatos</h2>
+                <p class="product-price">$21.99</p>
+                <p class="product-description">
+                    Comedor dispensador de alimento para Gatos excelente Calidad y durabilidad.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Comedor para Gatos', 21.99, 'images/comedor-gato.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+
+            <article class="product-card">
+                <img src="images/juguete-gato.jpg" alt="Juego para gatos" class="product-image">
+                <h2 class="product-name">Juguete para gatos</h2>
+                <p class="product-price">$12.99</p>
+                <p class="product-description">
+                    Juguete para Gatos perfectos para su rutina de ejercicios.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Juguete para gatos', 12.99, 'images/juguete-gato.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+
+            <article class="product-card">
+                <img src="images/hamaca-gato.jpg" alt="Hamaca para gatos" class="product-image">
+                <h2 class="product-name">Hamaca para Gatos</h2>
+                <p class="product-price">$21.00</p>
+                <p class="product-description">
+                    Hamaca resistente y cómoda, ideal para su Gato.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Hamaca para Gatos', 21.00, 'images/hamaca-gato.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+
+            <article class="product-card">
+                <img src="images/capibara.jpg" alt="Capibara Bordado" class="product-image">
+                <h2 class="product-name">Capibara Bordado</h2>
+                <p class="product-price">$5.00</p>
+                <p class="product-description">
+                    Adorable capibara bordado a mano, perfecto para decorar o regalar.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Capibara Bordado', 5.00, 'images/capibara.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+
+            <article class="product-card">
+                <img src="images/llavero_capibara.jpg" alt="Llavero-Capibara" class="product-image">
+                <h2 class="product-name">Llavero Capibara</h2>
+                <p class="product-price">$3.00</p>
+                <p class="product-description">
+                    llavero Capibara, ideal para obsequiar.
+                </p>
+                <button class="add-to-cart" onclick="addToCart('Llavero Capibara', 3.00, 'images/llavero_capibara.jpg')">
+                    Agregar al Carrito
+                </button>
+            </article>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="footer-content">
+            <h3 class="footer-title">Síguenos en Redes Sociales</h3>
+            <div class="social-links">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-link twitter">
+                    <span>𝕏</span> Twitter/X
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link instagram">
+                    <span>📷</span> Instagram
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link facebook">
+                    <span>f</span> Facebook
+                </a>
+                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="social-link tiktok">
+                    <span>♪</span> TikTok
+                </a>
+            </div>
+            <p class="footer-text">
+                © 2025 Geometric Store. Todos los derechos reservados.<br>
+                Tu tienda de confianza para productos únicos y variados.
+            </p>
+        </div>
+    </footer>
+
+    <!-- MODAL DE FORMULARIO DE CONTACTO -->
+    <div class="cart-modal" id="contactModal" aria-hidden="true">
+        <div class="cart-content">
+            <button class="close-cart" onclick="toggleContactModal()" aria-label="Cerrar formulario">✕</button>
+            <h2 class="cart-title">📧 Datos de Contacto</h2>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="userName">Nombre Completo *</label>
+                    <input type="text" id="userName" name="user_name" required placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Correo Electrónico *</label>
+                    <input type="email" id="userEmail" name="user_email" required placeholder="tu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="userPhone">Teléfono</label>
+                    <input type="tel" id="userPhone" name="user_phone" placeholder="+1 234 567 8900">
+                </div>
+                <div class="form-group">
+                    <label for="userAddress">Dirección de Entrega *</label>
+                    <textarea id="userAddress" name="user_address" required placeholder="Calle, número, ciudad, código postal" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="userNotes">Notas adicionales</label>
+                    <textarea id="userNotes" name="user_notes" placeholder="Instrucciones especiales, preferencias de entrega, etc." rows="2"></textarea>
+                </div>
+                <button type="submit" class="checkout-button" id="submitButton">
+                    ✉️ Enviar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DEL CARRITO -->
+    <div class="cart-modal" id="cartModal" aria-hidden="true">
+        <div class="cart-content">
+            <button class="close-cart" onclick="toggleCart()" aria-label="Cerrar carrito">✕</button>
+            <h2 class="cart-title">🛒 Mi Carrito</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total">
+                <div class="total-label">Total:</div>
+                <div class="total-amount" id="totalAmount">$0.00</div>
+            </div>
+            <div class="checkout-buttons">
+                <button class="checkout-button whatsapp-button" onclick="sendWhatsApp()">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px; margin-right: 8px;">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Enviar por WhatsApp
+                </button>
+                <button class="checkout-button email-button" id="checkoutButton" onclick="handleCheckout()">
+                    📧 Enviar por Correo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIÓN -->
+    <div class="notification" id="notification" role="alert">
+        ✓ Producto agregado al carrito
+    </div>
+
+    <!-- BOTÓN FLOTANTE DE WHATSAPP -->
+    <a href="https://wa.me/5804128031454?text=Hola,%20estoy%20interesado%20en%20sus%20productos" 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contactar por WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span class="whatsapp-tooltip">¿Necesitas ayuda?</span>
+    </a>
+
+    <!-- Enlace al archivo JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
