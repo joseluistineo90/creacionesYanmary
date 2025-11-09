@@ -1,0 +1,24 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.Notepad++/
+.vscode/
+.idea/
+*prueba*
+*.sublime-*
+~*
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+
+# Node modules (si usaras Node.js en el futuro)
+node_modules/
+package-lock.json
+
+# Netlify
+.netlify/

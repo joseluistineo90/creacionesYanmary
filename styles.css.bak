@@ -237,7 +237,7 @@ header h1 {
 }
 
 /* ========================================
-   PRODUCTOS - MEJORAS PARA LAS IMÁGENES
+   PRODUCTOS
    ======================================== */
 .products-grid {
     display: grid;
@@ -252,8 +252,6 @@ header h1 {
     overflow: hidden;
     box-shadow: var(--shadow);
     transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
 }
 
 .product-card:hover {
@@ -261,30 +259,10 @@ header h1 {
     box-shadow: var(--shadow-lg);
 }
 
-/* Contenedor específico para la imagen */
-.product-image-container {
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    overflow: hidden;
-    padding: 15px;
-}
-
 .product-image {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    transform: translateZ(0);
-    transition: transform 0.3s ease;
-}
-
-.product-card:hover .product-image {
-    transform: scale(1.05);
+    height: 200px;
+    object-fit: cover;
 }
 
 .product-card h2 {
@@ -304,7 +282,6 @@ header h1 {
     color: var(--text-secondary);
     margin: 0.5rem 1rem;
     font-size: 0.9rem;
-    flex-grow: 1;
 }
 
 .add-to-cart {
@@ -651,6 +628,7 @@ footer {
 .contact-form .checkout-button:disabled {
     background: var(--text-secondary);
 }
+/*prueba*/
 
 /* ========================================
    FORMULARIO DE CONTACTO
@@ -846,12 +824,6 @@ footer {
         gap: 1.5rem;
     }
     
-    /* Ajustes para imágenes en tablets */
-    .product-image-container {
-        height: 220px;
-        padding: 12px;
-    }
-    
     .cart-content {
         padding: 1.5rem;
     }
@@ -925,11 +897,5 @@ footer {
     
     .subtitle {
         font-size: 1rem;
-    }
-    
-    /* Ajustes para imágenes en móviles */
-    .product-image-container {
-        height: 200px;
-        padding: 10px;
     }
 }

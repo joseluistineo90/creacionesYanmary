@@ -2,6 +2,7 @@
  * Creaciones Yanmary - Shopping Cart System
  * Author: Creaciones Yanmary Team
  * Year: 2025
+ * CON PROTECCIÓN ANTI-SPAM COMPLETA
  */
 
 'use strict';
@@ -10,14 +11,13 @@
 // VARIABLES GLOBALES
 // ========================================
 let cart = [];
+let lastSubmitTime = 0;
+const SUBMIT_COOLDOWN = 60000; // 1 minuto entre envíos
 
 // ========================================
 // FUNCIONES DE NAVEGACIÓN
 // ========================================
 
-/**
- * Alternar visibilidad del menú móvil
- */
 function toggleMenu() {
     const menu = document.getElementById('navMenu');
     menu.classList.toggle('active');
@@ -27,12 +27,6 @@ function toggleMenu() {
 // FUNCIONES DEL CARRITO
 // ========================================
 
-/**
- * Agregar producto al carrito
- * @param {string} name - Nombre del producto
- * @param {number} price - Precio del producto
- * @param {string} image - URL de la imagen del producto
- */
 function addToCart(name, price, image) {
     const existingItem = cart.find(item => item.name === name);
     
@@ -51,20 +45,11 @@ function addToCart(name, price, image) {
     showNotification();
 }
 
-/**
- * Eliminar producto del carrito
- * @param {number} index - Índice del producto en el array
- */
 function removeFromCart(index) {
     cart.splice(index, 1);
     updateCart();
 }
 
-/**
- * Actualizar cantidad de un producto
- * @param {number} index - Índice del producto
- * @param {number} change - Cambio en la cantidad (+1 o -1)
- */
 function updateQuantity(index, change) {
     cart[index].quantity += change;
     
@@ -75,25 +60,19 @@ function updateQuantity(index, change) {
     }
 }
 
-/**
- * Actualizar interfaz del carrito
- */
 function updateCart() {
     const cartCount = document.getElementById('cartCount');
     const cartCountMobile = document.getElementById('cartCountMobile');
     const cartItems = document.getElementById('cartItems');
     const totalAmount = document.getElementById('totalAmount');
     
-    // Calcular total de productos
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
     
-    // Actualizar contador móvil también
     if (cartCountMobile) {
         cartCountMobile.textContent = totalItems;
     }
     
-    // Si el carrito está vacío
     if (cart.length === 0) {
         cartItems.innerHTML = `
             <div class="empty-cart">
@@ -105,7 +84,6 @@ function updateCart() {
         return;
     }
     
-    // Generar HTML de los productos
     let html = '';
     let total = 0;
     
@@ -136,21 +114,14 @@ function updateCart() {
     totalAmount.textContent = `$${total.toFixed(2)}`;
 }
 
-/**
- * Alternar visibilidad del modal del carrito
- */
 function toggleCart() {
     const modal = document.getElementById('cartModal');
     modal.classList.toggle('active');
     
-    // Actualizar atributo aria-hidden
     const isActive = modal.classList.contains('active');
     modal.setAttribute('aria-hidden', !isActive);
 }
 
-/**
- * Mostrar notificación de producto agregado
- */
 function showNotification() {
     const notification = document.getElementById('notification');
     notification.classList.add('show');
@@ -164,22 +135,16 @@ function showNotification() {
 // FUNCIONES DE CHECKOUT
 // ========================================
 
-/**
- * Manejar proceso de checkout
- */
 function handleCheckout() {
     if (cart.length === 0) {
         alert('Tu carrito está vacío. Agrega productos antes de finalizar la compra.');
         return;
     }
     
-    toggleCart(); // Cerrar carrito
-    toggleContactModal(); // Abrir formulario
+    toggleCart();
+    toggleContactModal();
 }
 
-/**
- * Alternar modal de contacto
- */
 function toggleContactModal() {
     const modal = document.getElementById('contactModal');
     modal.classList.toggle('active');
@@ -188,9 +153,6 @@ function toggleContactModal() {
     modal.setAttribute('aria-hidden', !isActive);
 }
 
-/**
- * Generar resumen del pedido en texto
- */
 function generateOrderSummary() {
     let summary = '=== RESUMEN DEL PEDIDO ===\n\n';
     let total = 0;
@@ -211,11 +173,8 @@ function generateOrderSummary() {
     return summary;
 }
 
-/**
- * Generar mensaje para WhatsApp
- */
 function generateWhatsAppMessage() {
-    let message = '¡Hola! Creaciones Yanmary Me gustaría hacer un pedido:\n\n';
+    let message = '¡Hola! Creaciones Yanmary - Me gustaría hacer un pedido:\n\n';
     let total = 0;
     
     cart.forEach((item, index) => {
@@ -233,23 +192,96 @@ function generateWhatsAppMessage() {
     return encodeURIComponent(message);
 }
 
-/**
- * Enviar pedido por WhatsApp
- */
 function sendWhatsApp() {
     if (cart.length === 0) {
         alert('Tu carrito está vacío. Agrega productos antes de enviar por WhatsApp.');
         return;
     }
     
-    // Número de WhatsApp configurado (Venezuela +58 0412 8031454)
     const whatsappNumber = '5804128031454';
-    
     const message = generateWhatsAppMessage();
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
     
-    // Abrir WhatsApp en nueva pestaña
     window.open(whatsappURL, '_blank');
+}
+
+// ========================================
+// FUNCIONES DE SEGURIDAD ANTI-SPAM
+// ========================================
+
+/**
+ * Validar honeypot (trampa para bots)
+ */
+function validateHoneypot() {
+    const honeypot = document.getElementById('website');
+    if (honeypot && honeypot.value !== '') {
+        console.log('🤖 Bot detectado: honeypot lleno');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validar rate limiting (máximo 1 envío por minuto)
+ */
+function validateRateLimit() {
+    const currentTime = Date.now();
+    const timeSinceLastSubmit = currentTime - lastSubmitTime;
+    
+    if (timeSinceLastSubmit < SUBMIT_COOLDOWN) {
+        const remainingSeconds = Math.ceil((SUBMIT_COOLDOWN - timeSinceLastSubmit) / 1000);
+        alert(`⏱️ Por favor espera ${remainingSeconds} segundos antes de enviar otro pedido.`);
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Validar contenido sospechoso en campos de texto
+ */
+function validateContent(text) {
+    const suspiciousKeywords = [
+        'nigeria', 'nigerian', 'prince', 'inheritance', 'lottery', 'winner', 
+        'million', 'billion', 'bitcoin', 'crypto', 'investment', 'viagra',
+        'casino', 'loan', 'debt', 'refinance', 'credit card', 'bank account',
+        'príncipe', 'herencia', 'lotería', 'ganador', 'millón', 'préstamo'
+    ];
+    
+    const lowerText = text.toLowerCase();
+    
+    for (const keyword of suspiciousKeywords) {
+        if (lowerText.includes(keyword)) {
+            console.log(`🚫 Contenido sospechoso detectado: ${keyword}`);
+            return false;
+        }
+    }
+    
+    // Detectar exceso de URLs
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const urls = text.match(urlPattern);
+    if (urls && urls.length > 2) {
+        console.log('🚫 Demasiadas URLs detectadas');
+        return false;
+    }
+    
+    // Detectar caracteres repetidos excesivamente (típico de spam)
+    const repeatedChars = /(.)\1{10,}/g;
+    if (repeatedChars.test(text)) {
+        console.log('🚫 Caracteres repetidos detectados');
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Sanitizar texto para prevenir inyección
+ */
+function sanitizeText(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 /**
@@ -259,60 +291,82 @@ function sendOrder(formData) {
     const submitButton = document.getElementById('submitButton');
     const originalText = submitButton.innerHTML;
     
-    // Cambiar texto del botón
+    // VALIDACIÓN 1: Honeypot
+    if (!validateHoneypot()) {
+        console.log('❌ Envío bloqueado: Bot detectado');
+        return;
+    }
+    
+    // VALIDACIÓN 2: Rate Limiting
+    if (!validateRateLimit()) {
+        return;
+    }
+    
+    // VALIDACIÓN 3: Contenido sospechoso
+    const fullText = `${formData.user_name} ${formData.user_address} ${formData.user_notes}`;
+    if (!validateContent(fullText)) {
+        alert('⚠️ Tu mensaje contiene contenido que no podemos procesar. Por favor, revisa la información e intenta nuevamente.');
+        return;
+    }
+    
+    // VALIDACIÓN 4: Longitud mínima del nombre
+    if (formData.user_name.length < 3) {
+        alert('⚠️ Por favor ingresa tu nombre completo.');
+        return;
+    }
+    
+    // VALIDACIÓN 5: Email válido
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.user_email)) {
+        alert('⚠️ Por favor ingresa un correo electrónico válido.');
+        return;
+    }
+    
     submitButton.innerHTML = '📤 Enviando...';
     submitButton.disabled = true;
     
     const orderSummary = generateOrderSummary();
-    
-    // Calcular total
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Preparar los parámetros del template
+    // Sanitizar datos antes de enviar
     const templateParams = {
-        user_name: formData.user_name,
-        user_email: formData.user_email,
-        user_phone: formData.user_phone || 'No proporcionado',
-        user_address: formData.user_address,
-        user_notes: formData.user_notes || 'Ninguna',
+        user_name: sanitizeText(formData.user_name),
+        user_email: sanitizeText(formData.user_email),
+        user_phone: sanitizeText(formData.user_phone || 'No proporcionado'),
+        user_address: sanitizeText(formData.user_address),
+        user_notes: sanitizeText(formData.user_notes || 'Ninguna'),
         order_summary: orderSummary,
         order_total: `$${total.toFixed(2)}`,
         order_date: new Date().toLocaleString('es-ES')
     };
     
-    // IMPORTANTE: Reemplaza estos valores con los tuyos de EmailJS
     const SERVICE_ID = 'service_5ns1roo';
     const TEMPLATE_ID = 'template_5lk9o49';
     
-    // Enviar email usando EmailJS
     emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
         .then(function(response) {
-            console.log('SUCCESS!', response.status, response.text);
+            console.log('✅ SUCCESS!', response.status);
             
-            // Restaurar botón
             submitButton.innerHTML = originalText;
             submitButton.disabled = false;
             
-            // Mostrar mensaje de éxito
+            // Actualizar timestamp del último envío
+            lastSubmitTime = Date.now();
+            
             alert('✅ ¡Pedido enviado exitosamente!\n\nRecibirás una confirmación en tu correo electrónico.');
             
-            // Limpiar carrito y cerrar modal
             cart = [];
             updateCart();
             toggleContactModal();
-            
-            // Limpiar formulario
             document.getElementById('contactForm').reset();
             
         }, function(error) {
-            console.log('FAILED...', error);
+            console.log('❌ FAILED...', error);
             
-            // Restaurar botón
             submitButton.innerHTML = originalText;
             submitButton.disabled = false;
             
-            // Mostrar mensaje de error
-            alert('❌ Error al enviar el pedido.\n\nPor favor, intenta nuevamente o contacta con soporte.\n\nError: ' + JSON.stringify(error));
+            alert('❌ Error al enviar el pedido.\n\nPor favor, intenta nuevamente.');
         });
 }
 
@@ -320,21 +374,15 @@ function sendOrder(formData) {
 // EVENT LISTENERS
 // ========================================
 
-/**
- * Inicialización cuando el DOM está listo
- */
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Inicializar carrito al cargar la página
     updateCart();
     
-    // Event listener para el formulario de contacto
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Obtener datos del formulario
             const formData = {
                 user_name: document.getElementById('userName').value,
                 user_email: document.getElementById('userEmail').value,
@@ -343,12 +391,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 user_notes: document.getElementById('userNotes').value
             };
             
-            // Enviar pedido
             sendOrder(formData);
         });
     }
     
-    // Cerrar modal del carrito al hacer clic fuera del contenido
     const cartModal = document.getElementById('cartModal');
     if (cartModal) {
         cartModal.addEventListener('click', function(e) {
@@ -358,7 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Cerrar modal de contacto al hacer clic fuera
     const contactModal = document.getElementById('contactModal');
     if (contactModal) {
         contactModal.addEventListener('click', function(e) {
@@ -368,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Cerrar menú móvil al hacer clic en un enlace
     const navLinks = document.querySelectorAll('.nav-menu a');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
@@ -380,9 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/**
- * Cerrar modales con tecla Escape
- */
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const cartModal = document.getElementById('cartModal');
